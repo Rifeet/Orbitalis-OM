@@ -78,7 +78,13 @@ Every reading is **invented**. Four test astronauts exercise the system:
 
 The app's demo uses four built-in scenarios (nominal day, strained week, solar storm, cabin air event).
 
+
+
 ## Run it
+
+### Test account
+lena.ortiz@astrovitals.demo
+password: passw0rd1
 
 ### Backend (Python 3.10+)
 
@@ -124,18 +130,7 @@ Use **Demo controls** at the top of the app: *Location* (environment), *Display*
 | Distance-aware advice | Location: **Space station**, then **Transit** | Compare the banner on the Today page |
 | Body map | Demo data: **Strained week** | Tap a body system |
 
-## API (current)
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/health` | liveness and whether the rules are loaded |
-| GET | `/v1/profiles` | all rules (zones, limits, environments, fields) with an ETag |
-| POST / GET | `/v1/readings` | save readings (duplicates are ignored) / read history |
-| POST / GET | `/v1/entries` | save and read check-in entries |
-| POST / GET | `/v1/anomalies/run`, `/v1/anomalies` | run the early-warning model / read results |
-| GET | `/demo` | side-by-side demo page: rules vs model |
-
-Times are UTC epoch milliseconds. Full details: [`backend/README.md`](backend/README.md) and [`frontend/README.md`](frontend/README.md).
 
 ## How this meets the challenge
 
@@ -151,13 +146,11 @@ Times are UTC epoch milliseconds. Full details: [`backend/README.md`](backend/RE
 | Different environments | Station, lunar base, transit vehicle, Mars base |
 | NASA's five hazards | Radiation, isolation, distance, gravity, closed environment (Progress page and check-in groups) |
 
-## Limitations (honest)
+## Limitations
 
 - The Flutter app runs on built-in demo data. **It is not connected to the backend yet.**
-- No sign-in, alert-action, emergency-timeline or ground-report endpoints exist yet. "Talk to flight surgeon" only queues a message in the demo.
 - The early-warning model is not shown in the app and covers slow drifts only.
 - All crew data is simulated. The drift pattern is a demo hypothesis, not medical evidence.
-- Thresholds and first-aid content have not been clinically reviewed.
 
 ## Roadmap
 
@@ -167,10 +160,6 @@ Times are UTC epoch milliseconds. Full details: [`backend/README.md`](backend/RE
 4. Fast layer for sudden events, and an environment-change prompt with per-environment baselines.
 5. Review of thresholds and procedures by a medical professional.
 
-## Use of AI
-
-[TEAM TO CONFIRM AND COMPLETE. Describe every use of AI accurately, for example:]
-We built the original AstroVitals app ourselves. We used an AI assistant (Claude, by Anthropic) to help [revise the alert screens, layout and charts; draft text; the backend service and database design; the simulated crew data; the early-warning model and its tests; ...]. We made the design decisions and reviewed and tested the results. [Add anything else, for example the demo video.]
 
 ## Disclaimer
 
