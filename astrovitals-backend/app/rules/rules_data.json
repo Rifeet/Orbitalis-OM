@@ -1,0 +1,1498 @@
+{
+ "source": {
+  "files": [
+   "contract/zones.dart",
+   "contract/limits.dart",
+   "contract/models.dart",
+   "engine/engine.dart",
+   "contract/fields.dart",
+   "data/app_state.dart"
+  ],
+  "sha256": "c5c3864052416ad833967ea90e8db5a39ea217dd5615cc89060028209e8ade20"
+ },
+ "environments": [
+  {
+   "key": "iss",
+   "name": "Space station",
+   "end_a": "Launch",
+   "end_b": "Return",
+   "total_days": 180,
+   "day": 30,
+   "gravity": "0 g",
+   "dose_rate_msv_day": 0.6,
+   "limit_msv": 50.0,
+   "delay_min": 0.0,
+   "phase": "station increment"
+  },
+  {
+   "key": "moon",
+   "name": "Lunar base",
+   "end_a": "Landing",
+   "end_b": "Departure",
+   "total_days": 60,
+   "day": 21,
+   "gravity": "0.17 g",
+   "dose_rate_msv_day": 1.4,
+   "limit_msv": 100.0,
+   "delay_min": 0.02,
+   "phase": "surface stay"
+  },
+  {
+   "key": "mars_transit",
+   "name": "Transit vehicle",
+   "end_a": "Earth",
+   "end_b": "Mars",
+   "total_days": 270,
+   "day": 47,
+   "gravity": "0 g",
+   "dose_rate_msv_day": 1.8,
+   "limit_msv": 250.0,
+   "delay_min": 20.0,
+   "phase": "outbound transit"
+  },
+  {
+   "key": "mars_surface",
+   "name": "Mars base",
+   "end_a": "Landing",
+   "end_b": "Ascent",
+   "total_days": 500,
+   "day": 60,
+   "gravity": "0.38 g",
+   "dose_rate_msv_day": 0.7,
+   "limit_msv": 100.0,
+   "delay_min": 20.0,
+   "phase": "surface stay"
+  }
+ ],
+ "metrics": [
+  {
+   "id": "hr",
+   "api_metric": "heart_rate",
+   "field": "heart_rate",
+   "name": "Resting heart rate",
+   "unit": "bpm",
+   "series_key": "hr",
+   "decimals": 0
+  },
+  {
+   "id": "bp",
+   "api_metric": "blood_pressure",
+   "field": "blood_pressure",
+   "name": "Blood pressure",
+   "unit": "mmHg",
+   "series_key": "sys",
+   "decimals": 0
+  },
+  {
+   "id": "spo2",
+   "api_metric": "spo2",
+   "field": "spo2",
+   "name": "Blood oxygen",
+   "unit": "%",
+   "series_key": "spo2",
+   "decimals": 0
+  },
+  {
+   "id": "glu",
+   "api_metric": "blood_glucose",
+   "field": "blood_glucose",
+   "name": "Fasting glucose",
+   "unit": "mg/dL",
+   "series_key": "glu",
+   "decimals": 0
+  },
+  {
+   "id": "temp",
+   "api_metric": "body_temperature",
+   "field": "body_temperature",
+   "name": "Body temperature",
+   "unit": "°C",
+   "series_key": "temp",
+   "decimals": 1
+  },
+  {
+   "id": "sleep",
+   "api_metric": "sleep_hours",
+   "field": "sleep_hours_wakeups",
+   "name": "Sleep last night",
+   "unit": "h",
+   "series_key": "sleep",
+   "decimals": 1
+  },
+  {
+   "id": "mood",
+   "api_metric": "mood_daily",
+   "field": "mood_daily",
+   "name": "Mood",
+   "unit": "/ 5",
+   "series_key": "mood",
+   "decimals": 0
+  },
+  {
+   "id": "ex",
+   "api_metric": "exercise_minutes",
+   "field": "exercise",
+   "name": "Exercise today",
+   "unit": "min",
+   "series_key": "ex",
+   "decimals": 0
+  },
+  {
+   "id": "rad",
+   "api_metric": "cumulative_dose",
+   "field": "radiation_dose_msv",
+   "name": "Radiation, mission total",
+   "unit": "mSv",
+   "series_key": "radTotal",
+   "decimals": 0
+  },
+  {
+   "id": "co2",
+   "api_metric": "co2_ppm",
+   "field": "co2_ppm",
+   "name": "Cabin CO₂",
+   "unit": "ppm",
+   "series_key": "co2",
+   "decimals": 0
+  },
+  {
+   "id": "hum",
+   "api_metric": "cabin_humidity",
+   "field": "cabin_humidity",
+   "name": "Cabin humidity",
+   "unit": "% RH",
+   "series_key": "hum",
+   "decimals": 0
+  },
+  {
+   "id": "ctemp",
+   "api_metric": "cabin_temperature",
+   "field": "cabin_temperature",
+   "name": "Cabin temperature",
+   "unit": "°C",
+   "series_key": "ctemp",
+   "decimals": 1
+  },
+  {
+   "id": "noise",
+   "api_metric": "cabin_noise",
+   "field": "cabin_noise",
+   "name": "Cabin noise",
+   "unit": "dBA",
+   "series_key": "noise",
+   "decimals": 0
+  },
+  {
+   "id": "resp",
+   "api_metric": "respiratory_rate",
+   "field": "respiratory_rate",
+   "name": "Breathing rate",
+   "unit": "/ min",
+   "series_key": "resp",
+   "decimals": 0
+  },
+  {
+   "id": "mass",
+   "api_metric": "body_mass",
+   "field": "body_mass",
+   "name": "Body mass",
+   "unit": "kg",
+   "series_key": "mass",
+   "decimals": 1
+  },
+  {
+   "id": "dose_rate",
+   "api_metric": "dose_rate",
+   "field": "radiation_dose_msv",
+   "name": "Dose rate",
+   "unit": "mSv/day",
+   "series_key": "rad",
+   "decimals": 2,
+   "extra": true
+  }
+ ],
+ "reading_defs": {
+  "hr": {
+   "metric": "heart_rate",
+   "field": "heart_rate",
+   "unit": "bpm"
+  },
+  "sys": {
+   "metric": "blood_pressure",
+   "field": "blood_pressure",
+   "unit": "mmHg"
+  },
+  "spo2": {
+   "metric": "spo2",
+   "field": "spo2",
+   "unit": "%"
+  },
+  "glu": {
+   "metric": "blood_glucose",
+   "field": "blood_glucose",
+   "unit": "mg/dL"
+  },
+  "temp": {
+   "metric": "body_temperature",
+   "field": "body_temperature",
+   "unit": "°C"
+  },
+  "sleep": {
+   "metric": "sleep_hours",
+   "field": "sleep_hours_wakeups",
+   "unit": "h"
+  },
+  "mood": {
+   "metric": "mood_daily",
+   "field": "mood_daily",
+   "unit": "/ 5"
+  },
+  "ex": {
+   "metric": "exercise_minutes",
+   "field": "exercise",
+   "unit": "min"
+  },
+  "rad": {
+   "metric": "dose_rate",
+   "field": "radiation_dose_msv",
+   "unit": "mSv/day"
+  },
+  "co2": {
+   "metric": "co2_ppm",
+   "field": "co2_ppm",
+   "unit": "ppm"
+  },
+  "hum": {
+   "metric": "cabin_humidity",
+   "field": "cabin_humidity",
+   "unit": "%RH"
+  },
+  "ctemp": {
+   "metric": "cabin_temperature",
+   "field": "cabin_temperature",
+   "unit": "°C"
+  },
+  "noise": {
+   "metric": "cabin_noise",
+   "field": "cabin_noise",
+   "unit": "dBA"
+  },
+  "resp": {
+   "metric": "respiratory_rate",
+   "field": "respiratory_rate",
+   "unit": "/min"
+  },
+  "mass": {
+   "metric": "body_mass",
+   "field": "body_mass",
+   "unit": "kg"
+  }
+ },
+ "fields": [
+  {
+   "id": "radiation_dose_msv",
+   "hz": "rad",
+   "label": "Radiation dose",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "symptom_checklist",
+   "hz": "rad",
+   "label": "Symptom checklist",
+   "kind": "chips",
+   "log": true
+  },
+  {
+   "id": "skin_eye_images",
+   "hz": "rad",
+   "label": "Skin and eye photos",
+   "kind": "photos",
+   "log": true
+  },
+  {
+   "id": "spo2",
+   "hz": "env",
+   "label": "Blood oxygen",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "body_temperature",
+   "hz": "env",
+   "label": "Body temperature",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "medications",
+   "hz": "rad",
+   "label": "Medications",
+   "kind": "meds",
+   "log": true
+  },
+  {
+   "id": "supplements",
+   "hz": "rad",
+   "label": "Supplements",
+   "kind": "chips",
+   "log": true
+  },
+  {
+   "id": "mood_daily",
+   "hz": "iso",
+   "label": "Mood today",
+   "kind": "mood",
+   "log": true
+  },
+  {
+   "id": "stress_fatigue_workload",
+   "hz": "iso",
+   "label": "Stress, fatigue and workload",
+   "kind": "sliders",
+   "log": true
+  },
+  {
+   "id": "loneliness_crew_interaction",
+   "hz": "iso",
+   "label": "Connection and crew time",
+   "kind": "social",
+   "log": true
+  },
+  {
+   "id": "weekly_questionnaire",
+   "hz": "iso",
+   "label": "Weekly check-in",
+   "kind": "weekly",
+   "log": true
+  },
+  {
+   "id": "journal",
+   "hz": "iso",
+   "label": "Private journal",
+   "kind": "journal",
+   "log": true
+  },
+  {
+   "id": "reaction_time_test",
+   "hz": "iso",
+   "label": "Reaction time check",
+   "kind": "rt",
+   "log": true
+  },
+  {
+   "id": "sleep_hours_wakeups",
+   "hz": "iso",
+   "label": "Sleep and wake-ups",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "sleep_quality",
+   "hz": "iso",
+   "label": "Sleep quality",
+   "kind": "rate",
+   "log": true
+  },
+  {
+   "id": "sleep_vs_mission_clock",
+   "hz": "iso",
+   "label": "Sleep against the mission clock",
+   "kind": "sleepclock",
+   "log": false
+  },
+  {
+   "id": "mission_day_phase",
+   "hz": "dist",
+   "label": "Mission day and phase",
+   "kind": "day",
+   "log": false
+  },
+  {
+   "id": "symptom_severity",
+   "hz": "dist",
+   "label": "Symptom severity",
+   "kind": "sev",
+   "log": true
+  },
+  {
+   "id": "symptom_duration",
+   "hz": "dist",
+   "label": "Symptom duration",
+   "kind": "dur",
+   "log": true
+  },
+  {
+   "id": "medications_taken",
+   "hz": "dist",
+   "label": "Medications taken",
+   "kind": "medstaken",
+   "log": true
+  },
+  {
+   "id": "habitat_type",
+   "hz": "dist",
+   "label": "Habitat type",
+   "kind": "habitat",
+   "log": false
+  },
+  {
+   "id": "medical_inventory",
+   "hz": "dist",
+   "label": "Medical inventory",
+   "kind": "inv",
+   "log": true
+  },
+  {
+   "id": "communication_delay",
+   "hz": "dist",
+   "label": "Message delay",
+   "kind": "delay",
+   "log": false
+  },
+  {
+   "id": "flight_surgeon_review_flag",
+   "hz": "dist",
+   "label": "Flight surgeon review",
+   "kind": "flag",
+   "log": false
+  },
+  {
+   "id": "exercise",
+   "hz": "grav",
+   "label": "Exercise today",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "pain_by_region",
+   "hz": "grav",
+   "label": "Pain by region",
+   "kind": "pain",
+   "log": true
+  },
+  {
+   "id": "body_mass",
+   "hz": "grav",
+   "label": "Body mass",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "heart_rate",
+   "hz": "grav",
+   "label": "Resting heart rate",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "blood_pressure",
+   "hz": "grav",
+   "label": "Blood pressure",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "ultrasound_images",
+   "hz": "grav",
+   "label": "Ultrasound images",
+   "kind": "photos",
+   "log": true
+  },
+  {
+   "id": "dizziness_vision_congestion",
+   "hz": "grav",
+   "label": "Dizziness, vision, congestion",
+   "kind": "chips",
+   "log": true
+  },
+  {
+   "id": "co2_ppm",
+   "hz": "env",
+   "label": "Cabin CO₂",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "cabin_humidity",
+   "hz": "env",
+   "label": "Cabin humidity",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "cabin_temperature",
+   "hz": "env",
+   "label": "Cabin temperature",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "cabin_noise",
+   "hz": "env",
+   "label": "Cabin noise",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "respiratory_rate",
+   "hz": "env",
+   "label": "Breathing rate",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "food_intake",
+   "hz": "env",
+   "label": "Food intake",
+   "kind": "food",
+   "log": true
+  },
+  {
+   "id": "hydration",
+   "hz": "env",
+   "label": "Hydration",
+   "kind": "water",
+   "log": true
+  },
+  {
+   "id": "blood_glucose",
+   "hz": "env",
+   "label": "Blood glucose",
+   "kind": "dev",
+   "log": true
+  },
+  {
+   "id": "symptoms_headache_rash",
+   "hz": "env",
+   "label": "Headache, rash and irritation",
+   "kind": "chips",
+   "log": true
+  }
+ ],
+ "zones": {
+  "hr": {
+   "bar": [
+    35,
+    130
+   ],
+   "bands": [
+    [
+     30,
+     35,
+     4
+    ],
+    [
+     35,
+     40,
+     3
+    ],
+    [
+     40,
+     45,
+     2
+    ],
+    [
+     45,
+     50,
+     1
+    ],
+    [
+     50,
+     90,
+     0
+    ],
+    [
+     90,
+     100,
+     1
+    ],
+    [
+     100,
+     110,
+     2
+    ],
+    [
+     110,
+     130,
+     3
+    ],
+    [
+     130,
+     200,
+     4
+    ]
+   ]
+  },
+  "sys": {
+   "bar": [
+    75,
+    170
+   ],
+   "bands": [
+    [
+     60,
+     70,
+     4
+    ],
+    [
+     70,
+     80,
+     3
+    ],
+    [
+     80,
+     85,
+     2
+    ],
+    [
+     85,
+     90,
+     1
+    ],
+    [
+     90,
+     130,
+     0
+    ],
+    [
+     130,
+     135,
+     1
+    ],
+    [
+     135,
+     140,
+     2
+    ],
+    [
+     140,
+     160,
+     3
+    ],
+    [
+     160,
+     220,
+     4
+    ]
+   ]
+  },
+  "dia": {
+   "bar": null,
+   "bands": [
+    [
+     30,
+     40,
+     4
+    ],
+    [
+     40,
+     50,
+     3
+    ],
+    [
+     50,
+     55,
+     2
+    ],
+    [
+     55,
+     60,
+     1
+    ],
+    [
+     60,
+     85,
+     0
+    ],
+    [
+     85,
+     90,
+     1
+    ],
+    [
+     90,
+     95,
+     2
+    ],
+    [
+     95,
+     110,
+     3
+    ],
+    [
+     110,
+     160,
+     4
+    ]
+   ]
+  },
+  "spo2": {
+   "bar": [
+    84,
+    100
+   ],
+   "bands": [
+    [
+     70,
+     90,
+     5
+    ],
+    [
+     90,
+     92,
+     3
+    ],
+    [
+     92,
+     94,
+     2
+    ],
+    [
+     94,
+     95,
+     1
+    ],
+    [
+     95,
+     101,
+     0
+    ]
+   ]
+  },
+  "glu": {
+   "bar": [
+    50,
+    200
+   ],
+   "bands": [
+    [
+     20,
+     54,
+     4
+    ],
+    [
+     54,
+     60,
+     3
+    ],
+    [
+     60,
+     70,
+     2
+    ],
+    [
+     70,
+     100,
+     0
+    ],
+    [
+     100,
+     110,
+     1
+    ],
+    [
+     110,
+     126,
+     2
+    ],
+    [
+     126,
+     180,
+     3
+    ],
+    [
+     180,
+     600,
+     4
+    ]
+   ]
+  },
+  "temp": {
+   "bar": [
+    34.5,
+    40
+   ],
+   "bands": [
+    [
+     32,
+     35,
+     3
+    ],
+    [
+     35,
+     35.5,
+     2
+    ],
+    [
+     35.5,
+     36.1,
+     1
+    ],
+    [
+     36.1,
+     37.3,
+     0
+    ],
+    [
+     37.3,
+     37.7,
+     1
+    ],
+    [
+     37.7,
+     38,
+     2
+    ],
+    [
+     38,
+     39,
+     3
+    ],
+    [
+     39,
+     43,
+     4
+    ]
+   ]
+  },
+  "sleep": {
+   "bar": [
+    2,
+    11
+   ],
+   "bands": [
+    [
+     0,
+     4,
+     4
+    ],
+    [
+     4,
+     5,
+     3
+    ],
+    [
+     5,
+     6,
+     2
+    ],
+    [
+     6,
+     7,
+     1
+    ],
+    [
+     7,
+     9,
+     0
+    ],
+    [
+     9,
+     10,
+     1
+    ],
+    [
+     10,
+     16,
+     2
+    ]
+   ]
+  },
+  "mood": {
+   "bar": [
+    1,
+    5
+   ],
+   "bands": [
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     2,
+     3,
+     2
+    ],
+    [
+     3,
+     4,
+     1
+    ],
+    [
+     4,
+     5.1,
+     0
+    ]
+   ]
+  },
+  "ex": {
+   "bar": [
+    0,
+    150
+   ],
+   "bands": [
+    [
+     0,
+     30,
+     3
+    ],
+    [
+     30,
+     60,
+     2
+    ],
+    [
+     60,
+     90,
+     1
+    ],
+    [
+     90,
+     600,
+     0
+    ]
+   ]
+  },
+  "rad": {
+   "bar": [
+    0,
+    120
+   ],
+   "bands": [
+    [
+     0,
+     50,
+     0
+    ],
+    [
+     50,
+     70,
+     1
+    ],
+    [
+     70,
+     85,
+     2
+    ],
+    [
+     85,
+     100,
+     3
+    ],
+    [
+     100,
+     400,
+     4
+    ]
+   ]
+  },
+  "co2": {
+   "bar": [
+    0,
+    10000
+   ],
+   "bands": [
+    [
+     0,
+     3000,
+     0
+    ],
+    [
+     3000,
+     4000,
+     1
+    ],
+    [
+     4000,
+     5000,
+     2
+    ],
+    [
+     5000,
+     7000,
+     3
+    ],
+    [
+     7000,
+     10000,
+     4
+    ],
+    [
+     10000,
+     40000,
+     5
+    ]
+   ]
+  },
+  "hum": {
+   "bar": [
+    10,
+    90
+   ],
+   "bands": [
+    [
+     0,
+     25,
+     3
+    ],
+    [
+     25,
+     30,
+     2
+    ],
+    [
+     30,
+     40,
+     1
+    ],
+    [
+     40,
+     60,
+     0
+    ],
+    [
+     60,
+     70,
+     1
+    ],
+    [
+     70,
+     75,
+     2
+    ],
+    [
+     75,
+     100,
+     3
+    ]
+   ]
+  },
+  "ctemp": {
+   "bar": [
+    14,
+    32
+   ],
+   "bands": [
+    [
+     0,
+     16,
+     3
+    ],
+    [
+     16,
+     18,
+     2
+    ],
+    [
+     18,
+     20,
+     1
+    ],
+    [
+     20,
+     25,
+     0
+    ],
+    [
+     25,
+     27,
+     1
+    ],
+    [
+     27,
+     30,
+     2
+    ],
+    [
+     30,
+     50,
+     3
+    ]
+   ]
+  },
+  "noise": {
+   "bar": [
+    40,
+    90
+   ],
+   "bands": [
+    [
+     20,
+     60,
+     0
+    ],
+    [
+     60,
+     65,
+     1
+    ],
+    [
+     65,
+     72,
+     2
+    ],
+    [
+     72,
+     85,
+     3
+    ],
+    [
+     85,
+     140,
+     4
+    ]
+   ]
+  },
+  "resp": {
+   "bar": [
+    6,
+    36
+   ],
+   "bands": [
+    [
+     2,
+     8,
+     4
+    ],
+    [
+     8,
+     10,
+     3
+    ],
+    [
+     10,
+     12,
+     1
+    ],
+    [
+     12,
+     20,
+     0
+    ],
+    [
+     20,
+     24,
+     1
+    ],
+    [
+     24,
+     28,
+     2
+    ],
+    [
+     28,
+     34,
+     3
+    ],
+    [
+     34,
+     60,
+     4
+    ]
+   ]
+  },
+  "mass": {
+   "bar": [
+    -10,
+    10
+   ],
+   "bands": [
+    [
+     -30,
+     -7,
+     4
+    ],
+    [
+     -7,
+     -5,
+     3
+    ],
+    [
+     -5,
+     -3,
+     2
+    ],
+    [
+     -3,
+     -2,
+     1
+    ],
+    [
+     -2,
+     2,
+     0
+    ],
+    [
+     2,
+     3,
+     1
+    ],
+    [
+     3,
+     5,
+     2
+    ],
+    [
+     5,
+     7,
+     3
+    ],
+    [
+     7,
+     30,
+     4
+    ]
+   ]
+  }
+ },
+ "limits": {
+  "hr": {
+   "min": 25,
+   "max": 220,
+   "label": "Heart rate",
+   "step": 1
+  },
+  "sys": {
+   "min": 60,
+   "max": 260,
+   "label": "Systolic pressure",
+   "step": 1
+  },
+  "dia": {
+   "min": 30,
+   "max": 160,
+   "label": "Diastolic pressure",
+   "step": 1
+  },
+  "glu": {
+   "min": 20,
+   "max": 600,
+   "label": "Glucose",
+   "step": 1
+  },
+  "temp": {
+   "min": 32,
+   "max": 43,
+   "label": "Temperature",
+   "step": 0.1
+  },
+  "sleep": {
+   "min": 0,
+   "max": 16,
+   "label": "Sleep",
+   "step": 1
+  },
+  "spo2": {
+   "min": 50,
+   "max": 100,
+   "label": "SpO₂",
+   "step": 1
+  },
+  "ex": {
+   "min": 0,
+   "max": 600,
+   "label": "Exercise",
+   "step": 1
+  },
+  "rad": {
+   "min": 0,
+   "max": 50,
+   "label": "Radiation dose",
+   "step": 0.01
+  },
+  "co2": {
+   "min": 300,
+   "max": 30000,
+   "label": "CO₂",
+   "step": 10
+  },
+  "hum": {
+   "min": 0,
+   "max": 100,
+   "label": "Humidity",
+   "step": 1
+  },
+  "ctemp": {
+   "min": 5,
+   "max": 45,
+   "label": "Cabin temperature",
+   "step": 0.1
+  },
+  "noise": {
+   "min": 20,
+   "max": 140,
+   "label": "Noise",
+   "step": 1
+  },
+  "resp": {
+   "min": 4,
+   "max": 60,
+   "label": "Breathing rate",
+   "step": 1
+  },
+  "mass": {
+   "min": 30,
+   "max": 200,
+   "label": "Body mass",
+   "step": 0.1
+  }
+ },
+ "baselines": {
+  "hr": 68,
+  "sys": 114,
+  "dia": 74,
+  "glu": 92,
+  "temp": 36.6,
+  "sleep": 7.0,
+  "mood": 4,
+  "spo2": 98,
+  "mass": 74.0
+ },
+ "devices": {
+  "rad": {
+   "device": "Crew Active Dosimeter",
+   "route": "Bluetooth to station computer",
+   "kind": "direct",
+   "age_min": 55
+  },
+  "spo2": {
+   "device": "Bio-Monitor shirt",
+   "route": "Base download",
+   "kind": "direct",
+   "age_min": 14
+  },
+  "resp": {
+   "device": "Bio-Monitor shirt",
+   "route": "Base download",
+   "kind": "direct",
+   "age_min": 14
+  },
+  "temp": {
+   "device": "Thermo-Mini sensor",
+   "route": "Sensor download",
+   "kind": "direct",
+   "age_min": 31
+  },
+  "sleep": {
+   "device": "Actiwatch",
+   "route": "Wrist download",
+   "kind": "direct",
+   "age_min": 410
+  },
+  "ex": {
+   "device": "Exercise log",
+   "route": "Copied to MEC laptop",
+   "kind": "direct",
+   "age_min": 95
+  },
+  "hr": {
+   "device": "Wrist strap",
+   "route": "Copied to MEC laptop",
+   "kind": "direct",
+   "age_min": 14
+  },
+  "sys": {
+   "device": "BP cuff and electrodes",
+   "route": "USB or Bluetooth",
+   "kind": "direct",
+   "age_min": 38
+  },
+  "dia": {
+   "device": "BP cuff and electrodes",
+   "route": "USB or Bluetooth",
+   "kind": "direct",
+   "age_min": 38
+  },
+  "glu": {
+   "device": "Glucometer",
+   "route": "Relayed to control centre",
+   "kind": "partial",
+   "age_min": 180
+  },
+  "mass": {
+   "device": "SLAMMD mass device",
+   "route": "Transfer not documented",
+   "kind": "partial",
+   "age_min": 2880
+  },
+  "co2": {
+   "device": "MCA analyzer",
+   "route": "Cabin air tubes",
+   "kind": "direct",
+   "age_min": 1
+  },
+  "hum": {
+   "device": "Multi-Gas Monitor",
+   "route": "Cabin sensor",
+   "kind": "direct",
+   "age_min": 1
+  },
+  "ctemp": {
+   "device": "Cabin air control",
+   "route": "Not documented",
+   "kind": "partial",
+   "age_min": 1
+  },
+  "noise": {
+   "device": "Sound level meter",
+   "route": "RS-232 cable to MEC",
+   "kind": "direct",
+   "age_min": 4
+  }
+ },
+ "meta": {
+  "plan_bed": "22:30",
+  "plan_up": "06:30",
+  "health_score": [
+   100,
+   85,
+   65,
+   40,
+   20,
+   0
+  ],
+  "health_cap": [
+   100,
+   89,
+   79,
+   64,
+   49,
+   34
+  ],
+  "tier_names": [
+   "Normal",
+   "Monitor",
+   "Advisory",
+   "Action soon",
+   "Act now",
+   "Emergency"
+  ],
+  "radiation_rate_bands": [
+   [
+    0,
+    1.5,
+    0
+   ],
+   [
+    1.5,
+    3,
+    2
+   ],
+   [
+    3,
+    6,
+    3
+   ],
+   [
+    6,
+    null,
+    4
+   ]
+  ],
+  "unsent_series": [
+   "dia"
+  ]
+ }
+}

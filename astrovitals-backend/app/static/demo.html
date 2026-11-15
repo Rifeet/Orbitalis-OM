@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AstroVitals early-warning demo</title>
+<style>
+:root{--bg:#0f1420;--card:#171e2e;--line:#2a3550;--tx:#e8ecf5;--mut:#8f9bb8;--ok:#2f8f5b;--watch:#d9a441;--bad:#e5484d;--learn:#3a4560}
+@media (prefers-color-scheme:light){:root{--bg:#f4f6fb;--card:#fff;--line:#d9deea;--tx:#1b2235;--mut:#5d6985;--learn:#c9d0e2}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,sans-serif;padding:16px;max-width:1100px;margin-inline:auto}
+h1{font-size:20px;margin:0 0 4px}p.sub{color:var(--mut);margin:0 0 14px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+button{background:#4f7cff;color:#fff;border:0;border-radius:8px;padding:9px 14px;font:inherit;cursor:pointer}
+button.sec{background:transparent;color:var(--tx);border:1px solid var(--line)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h2{font-size:16px;margin:0}.role{color:var(--mut);font-size:13px}
+.sum{margin:8px 0;font-size:14px}.sum b{font-weight:600}
+.row{display:flex;align-items:center;gap:8px;margin-top:6px}.lab{width:92px;font-size:12px;color:var(--mut);flex:none}
+.strip{display:grid;grid-template-columns:repeat(40,1fr);gap:2px;flex:1}
+.c{height:20px;border-radius:3px;background:var(--line);cursor:default}
+.c.learn{background:var(--learn)}.c.ok{background:var(--ok)}.c.watch{background:var(--watch)}.c.bad{background:var(--bad)}
+.c.none{background:transparent;border:1px dashed var(--line)}.c.r1{background:#5b8def}.c.r2{background:var(--watch)}.c.r3,.c.r4,.c.r5{background:var(--bad)}
+.c.t{background:#a35bff}.c.h{background:#26a6a6}.c.sel{outline:2px solid var(--tx)}
+.legend{font-size:12px;color:var(--mut);display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 14px}.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.why{margin-top:8px;font-size:13px;color:var(--mut);min-height:20px}
+@media(max-width:600px){.lab{width:64px}.c{height:16px}}
+</style></head><body>
+<h1>AstroVitals early-warning demo</h1>
+<p class="sub">The AI sees only readings. It never sets the alert level: the app's rules stay in charge. Output is "consistent with", never a diagnosis.</p>
+<div class="bar"><button id="run">Run model</button><button class="sec" id="ref">Refresh</button>
+<label><input type="checkbox" id="auto"> auto (run + refresh every 3 s, to watch a live replay)</label><span id="msg" class="sub" style="margin:0"></span></div>
+<div class="legend">
+<span><i style="background:var(--learn)"></i>learning normal (days 1-20)</span><span><i style="background:var(--ok)"></i>normal</span>
+<span><i style="background:var(--watch)"></i>AI watching (1 day)</span><span><i style="background:var(--bad)"></i>AI early warning (2 of last 3 days)</span>
+<span><i style="background:#5b8def"></i>app rule alert (blue = level 1, amber = 2, red = 3+)</span><span><i style="background:#a35bff"></i>answer key: really abnormal</span><span><i style="background:#26a6a6"></i>answer key: harmless blip</span></div>
+<div id="out"></div>
+<script>
+const $=s=>document.querySelector(s);let sel={};
+async function run(){$('#msg').textContent='running...';const r=await fetch('/v1/anomalies/run',{method:'POST'});const j=await r.json();
+$('#msg').textContent=j.rows_written?`model ran: ${j.rows_written} day-results written`:'model still learning (needs 21+ days of data)';await load()}
+async function load(){const j=await (await fetch('/v1/anomalies/overview')).json();const out=$('#out');out.innerHTML='';
+if(!j.crew.length){out.innerHTML='<div class="card">No readings yet. Run: <code>python -m sim.replay --reset</code></div>';return}
+for(const c of j.crew){const s=c.summary,card=document.createElement('div');card.className='card';
+let line;if(!s.scored_days)line='Still learning this astronaut\'s normal.';
+else{line=`AI flagged <b>${s.flagged_days}</b> of ${s.scored_days} scored days`;
+if(s.first_flag_day)line+=`, first on <b>day ${s.first_flag_day}</b>`+(s.first_true_day?` (real change began day ${s.first_true_day}, so <b>${s.first_flag_day-s.first_true_day} day${s.first_flag_day-s.first_true_day==1?'':'s'} after</b>)`:'');
+line+=`. False-alarm days: <b>${s.false_alarm_days}</b>. Harmless blips flagged: <b>${s.harmless_blips_flagged}/${s.harmless_blips_total}</b>. App rules: <b>${s.max_rule_level>=2?'reached level '+s.max_rule_level:'never above level 1'}</b>.`}
+card.innerHTML=`<h2>${c.crew_id} ${c.name}</h2><div class="role">${c.role}</div><div class="sum">${line}</div>`;
+const rows=[['AI model',d=>!d.scored?(d.learning?'learn':'none'):d.flagged?'bad':(d.reason&&d.reason.startsWith('Watching')?'watch':'ok')],
+['App rules',d=>'r'+d.rule_level.toString().replace(/^0$/,'0')],['Answer key',d=>d.truth?'t':d.harmless_blip?'h':'none']];
+const why=document.createElement('div');why.className='why';why.textContent='Click a day to see why.';
+for(const [lab,f] of rows){const r=document.createElement('div');r.className='row';r.innerHTML=`<div class="lab">${lab}</div>`;
+const st=document.createElement('div');st.className='strip';
+for(let i=0;i<40;i++){const d=c.days[i],e=document.createElement('div');
+if(!d){e.className='c none';}else{e.className='c '+f(d);e.title=`day ${d.day}`;
+e.onclick=()=>{why.innerHTML=`<b>Day ${d.day}</b> (score ${d.score??'-'}; rule level ${d.rule_level}): ${d.reason||'no result yet'}`}}
+st.appendChild(e)}r.appendChild(st);card.appendChild(r)}
+card.appendChild(why);out.appendChild(card)}}
+$('#run').onclick=run;$('#ref').onclick=load;let t;$('#auto').onchange=e=>{clearInterval(t);if(e.target.checked)t=setInterval(run,3000)};load();
+</script></body></html>
