@@ -7,8 +7,9 @@ Our solution to the Nasa Space App challenge 2026
 
 Repository: **Orbitalis-OM** · [NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/) · Challenge: *Create Health Monitoring Software for Astronauts on Space Missions*
 
-**Team:** [TEAM NAME] — [MEMBER 1], [MEMBER 2], [MEMBER 3]
-**Demo video:** [LINK] · **Interactive prototype:** [LINK]
+**Team:** Orbitalis OM — Ariam Saleh Zuwayid Al Hasani, 
+Shima Mubarak Al-breaking, Rifeet Akhter Mohammed Abdul Mannan
+**Demo video:** https://drive.google.com/drive/folders/1qvBIJN_B5YkBdSW1fyWN0W-cC__P4uTt
 
 ![Today screen](docs/screenshots/today.png)
 
