@@ -165,9 +165,3 @@ Use **Demo controls** at the top of the app: *Location* (environment), *Display*
 
 AstroVitals is a hackathon prototype for decision support. It is **not** a medical device and does not diagnose. All data shown is simulated.
 
-## Credits and license
-
-- Fonts: Chakra Petch and IBM Plex Sans (bundled; see their licenses).
-- First-aid procedures and sources are cited inside the app's Emergency guide.
-- Challenge: NASA Space Apps Challenge 2026.
-- License: [CHOOSE ONE, for example MIT, and add a LICENSE file]
